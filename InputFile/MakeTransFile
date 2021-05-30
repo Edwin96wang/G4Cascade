@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+
+import sys
+from src.DecaySchemes import DecaySchemes
+
+
+# read the file that specifies the ENSDF files 
+try:
+    NamesFile = sys.argv[1]
+except IndexError:
+    print("Error: Please enter name of the file that contains paths")
+    quit()
+else:
+    inputfile = open(NamesFile, 'r')
+    filenames = inputfile.read().splitlines()
+
+decays = DecaySchemes(filenames)
+
+try:
+    OutFile = sys.argv[2]
+except IndexError:
+    OutFile = "./output/"+'_'.join(decays.StartPoints)+"_Transition.csv"
+
+decays.OutPut(OutFile)
+
+print(OutFile+" has been created")
+print("decay starts from ", ', '.join(decays.StartPoints))
+print("decay ends to ", ', '.join(decays.FinalPoints))
