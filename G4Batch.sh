@@ -48,5 +48,5 @@ cp ../../src/DetectorConstruction.cc .
 cp $MACRO .
 
 # Run executable in batch mode, niced and multithreaded
-nice -n 19 ../../build/G4Horus -t 1 -k hist -m ${MACRO}
+nice -n 19 ../../build/G4Horus -t 32 -k hist -m ${MACRO}
 #nice -n 19 ../../build/G4Horus -t 32 -k soco -m ${MACRO}

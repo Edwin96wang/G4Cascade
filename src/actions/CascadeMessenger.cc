@@ -33,8 +33,9 @@ PrimaryGeneratorCascade::LevelScheme getScheme(G4String FilePath){
         getline(myfile,final_level,',');
         getline(myfile,alpha,',');
         getline(myfile,Hf,',');
-        getline(myfile,gamma,'\n');
-        scheme.push_back({stod(energy)*keV, stod(intensity), ini_level, final_level,stod(alpha), stod(Hf),gamma=="1"});
+        getline(myfile,gamma);
+
+        scheme.push_back({stod(energy)*keV, stod(intensity), ini_level, final_level,stod(alpha), stod(Hf), (G4bool)(stoi(gamma)==1)});
     }
     myfile.close();
 
@@ -68,7 +69,7 @@ CascadeMessenger::CascadeMessenger(PrimaryGeneratorCascade* PriGen):fPriGen(PriG
     fPath->SetGuidance("setting the file of cascade list");
     fPath->SetParameterName("fFile",false);
 
-    
+
 }
 
 CascadeMessenger::~CascadeMessenger(){
@@ -80,7 +81,7 @@ CascadeMessenger::~CascadeMessenger(){
 }
 
 void CascadeMessenger::SetNewValue(G4UIcommand* command, G4String newValues){
-    
+
     if(command==fmode){
         fPriGen->SetMode(fmode->GetNewBoolValue(newValues));
     }
