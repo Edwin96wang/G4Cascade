@@ -5,6 +5,8 @@ from os.path import isfile
 from os import access, R_OK
 import warnings
 import csv
+import sys
+
 
 
 #class DecaySchemes contains all transitions from the specified ENSDF files
@@ -24,13 +26,19 @@ class DecaySchemes:
         self.transition_all.sort(key = lambda x:float(x.get('energy')))
     # read filenames
     def parse(self, filenames):
-        for filename in filenames:
-            # check if files exist and are readable
-            if isfile(filename) and access(filename, R_OK):
-                self.decays.append(Decay(filename))
-            elif filename:
-                warnings.warn(filename, " does not exist or is not readable! ")
-    
+            try:
+                for filename in filenames:
+                    # check if files exist and are readable
+                    if isfile(filename) and access(filename, R_OK):
+                        self.decays.append(Decay(filename))
+                    elif filename:
+                        raise Exception(filename)
+            except Exception as inst:
+                print("Error: " + inst.args[0]+ " does not exist or is not readable! ")
+                sys.exit(1)
+
+
+
     # gather all transitions from decays
     def transition_setup(self):
         for decay in self.decays:
@@ -88,7 +96,7 @@ class Decay:
 
         self.open(self.filename)
         self.format()
-        
+
         #parse ENSDF lines
         try:
             self.ENSDF = ENSDF(self.ENSDF_lines)
@@ -99,12 +107,12 @@ class Decay:
         self.DecayInfoSetup()
 
         #set up excited levels:
-        self.LevelSetup() 
-        
+        self.LevelSetup()
+
 
         #set up transitions:
         self.TransSetup()
-        
+
 
         #sort transitions according to their energies:
         self.sort_transition()
@@ -132,7 +140,7 @@ class Decay:
             print("Error: File \"{}\" is not found".format(filename))
         else:
             self.ENSDF_lines = lines
-        
+
     def format(self):
         #get rid of the line that contains space or is empty
         self.ENSDF_lines = [line for line in self.ENSDF_lines if not(line.isspace()) and bool(line)]
@@ -155,8 +163,8 @@ class Decay:
             print("Error occurs during time transformation!\n Time string is: ", self.ENSDF.Parent['T'],\
                 "set half-life to 100 seconds by default")
             self.HalfLife = 100
-            
-        
+
+
         #set up initial energy of parent nuclide
         try:
             self.ParentEnergy =  self.float(self.ENSDF.Parent['E'].strip())
@@ -174,7 +182,7 @@ class Decay:
     # set up level information from ENSDF object
     def LevelSetup(self):
         for level in self.ENSDF.levels:
-            try: 
+            try:
                 level_energy = self.float(level.par['E'].strip())
             except Exception as err:
                 print("Error occurs during level setup: {}".format(err))
@@ -193,7 +201,7 @@ class Decay:
                 print("Error occurs at level_energy conversion during transition setup:\n {}"\
                     .format(err))
                 print(level.par)
-            
+
             if level_energy is None:
                 break
 

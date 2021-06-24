@@ -4,7 +4,7 @@ import sys
 from src.DecaySchemes import DecaySchemes
 
 
-# read the file that specifies the ENSDF files 
+# read the file that specifies the ENSDF files
 try:
     NamesFile = sys.argv[1]
 except IndexError:
@@ -23,6 +23,11 @@ except IndexError:
 
 decays.OutPut(OutFile)
 
+print("\n")
 print(OutFile+" has been created")
+print("\n")
 print("decay starts from ", ', '.join(decays.StartPoints))
 print("decay ends to ", ', '.join(decays.FinalPoints))
+print("\n")
+print("program has run successfully!")
+print("\n")
