@@ -66,7 +66,7 @@ PrimaryGeneratorCascade::LevelScheme::iterator PrimaryGeneratorCascade::GetItr(G
         LevelScheme::iterator itrp = find_if(fLevelScheme.begin(),fLevelScheme.end(), [&](const Decay &x){return x.energy == E;});
         for(LevelScheme::iterator i=itrp; i < fLevelScheme.end(); i++){
                 i = find_if(i,fLevelScheme.end(), [&](const Decay &x){return x.energy == E;});
-                if(i->intensity > itrp->intensity) itrp = i;
+                if(i != fLevelScheme.end() && i->intensity > itrp->intensity) itrp = i;
         }
         if(itrp == fLevelScheme.end()){
                 G4cerr << "ERROR: energy not found at " << E << G4endl;
@@ -128,7 +128,7 @@ void PrimaryGeneratorCascade::ParticleGun(G4Event* event, G4double energy){
         G4double uy = sin_theta * std::sin(phi);
         G4double uz = cos_theta;
         gamma->SetMomentumDirection(G4ThreeVector(ux, uy, uz));
-        // G4cout << "-----------energy:" << energy << G4endl;
+        // G4cout << "-----------energy:"   << G4endl;
 
         // Jan's method
         // G4ThreeVector mom;
